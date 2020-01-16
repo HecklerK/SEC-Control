@@ -12,18 +12,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using SEC_Control.Pages;
 
-namespace SEC_Control
+namespace SEC_Control.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для Admin.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Admin : Page
     {
-        public MainWindow()
+        public Admin(Login.Ad var)
         {
             InitializeComponent();
+            login.Content = var.login;
         }
     }
 }
