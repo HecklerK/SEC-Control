@@ -26,5 +26,8 @@ namespace SEC_Control
         }
     
         public virtual DbSet<Admin> Admin { get; set; }
+        public virtual DbSet<Pavilion> Pavilion { get; set; }
+        public virtual DbSet<SEC> SEC { get; set; }
+        public virtual DbSet<Type> Type { get; set; }
     }
 }

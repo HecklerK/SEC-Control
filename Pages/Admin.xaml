@@ -8,16 +8,23 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Admin">
 
-    <Grid>
+    <Grid Loaded="Grid_Loaded">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35*"/>
-            <RowDefinition Height="416*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="382*"/>
+            <RowDefinition Height="33*"/>
         </Grid.RowDefinitions>
-        <Label x:Name="login" Content="" HorizontalContentAlignment="Center" Grid.Row="1" VerticalAlignment="Top" FontSize="20"/>
+        <Label x:Name="login" Content="" HorizontalContentAlignment="Center" Grid.Row="0" Margin="0" FontSize="16"/>
+        <Button Content="Выход" HorizontalAlignment="Right" Padding="0,0,0,0"  Grid.Column="2" Margin="0,0,0,0" Width="100" FontSize="16" Click="Button_Click"/>
+        <ListBox x:Name="List1" Grid.Column="1"  Margin="0,0,0,30" Grid.Row="1" FontSize="20" Grid.RowSpan="2" SelectionChanged="List1_SelectionChanged"/>
+        <Button Content="+" Grid.Column="1" Margin="0,0,0,0" Grid.Row="2" FontSize="20"/>
+        <ListBox x:Name="list2" Grid.Column="2" Margin="0,0,0,30" Grid.Row="1" Grid.RowSpan="2"/>
+        <Button Content="+" Grid.Column="2" Margin="0,0,0,0" Grid.Row="2" FontSize="20"/>
 
     </Grid>
 </Page>

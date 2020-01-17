@@ -12,8 +12,70 @@
           <Property Name="login" Type="nchar" MaxLength="10" Nullable="false" />
           <Property Name="password" Type="nchar" MaxLength="10" Nullable="false" />
         </EntityType>
+        <EntityType Name="Pavilion">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="pavilion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" />
+          <Property Name="SEC" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SEC">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="pass" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="type" Type="int" Nullable="false" />
+          <Property Name="phone" Type="int" />
+          <Property Name="delete" Type="int" />
+        </EntityType>
+        <EntityType Name="Type">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Pavilion_SEC">
+          <End Role="SEC" Type="Self.SEC" Multiplicity="1" />
+          <End Role="Pavilion" Type="Self.Pavilion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SEC">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Pavilion">
+              <PropertyRef Name="SEC" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SEC_Type">
+          <End Role="Type" Type="Self.Type" Multiplicity="1" />
+          <End Role="SEC" Type="Self.SEC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Type">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SEC">
+              <PropertyRef Name="type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="Хранилище ModelContainer">
           <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pavilion" EntityType="Self.Pavilion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SEC" EntityType="Self.SEC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Type" EntityType="Self.Type" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Pavilion_SEC" Association="Self.FK_Pavilion_SEC">
+            <End Role="SEC" EntitySet="SEC" />
+            <End Role="Pavilion" EntitySet="Pavilion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SEC_Type" Association="Self.FK_SEC_Type">
+            <End Role="Type" EntitySet="Type" />
+            <End Role="SEC" EntitySet="SEC" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -21,6 +83,17 @@
       <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="DBEntities" annotation:LazyLoadingEnabled="true" >
           <EntitySet Name="Admin" EntityType="Model.Admin" />
+          <EntitySet Name="Pavilion" EntityType="Model.Pavilion" />
+          <EntitySet Name="SEC" EntityType="Model.SEC" />
+          <EntitySet Name="Type" EntityType="Model.Type" />
+          <AssociationSet Name="FK_Pavilion_SEC" Association="Model.FK_Pavilion_SEC">
+            <End Role="SEC" EntitySet="SEC" />
+            <End Role="Pavilion" EntitySet="Pavilion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SEC_Type" Association="Model.FK_SEC_Type">
+            <End Role="Type" EntitySet="Type" />
+            <End Role="SEC" EntitySet="SEC" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Admin">
           <Key>
@@ -29,6 +102,61 @@
           <Property Name="login" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="password" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
         </EntityType>
+        <EntityType Name="Pavilion">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="pavilion1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SEC" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SEC1" Relationship="Model.FK_Pavilion_SEC" FromRole="Pavilion" ToRole="SEC" />
+        </EntityType>
+        <EntityType Name="SEC">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="pass" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="type" Type="Int32" Nullable="false" />
+          <Property Name="phone" Type="Int32" />
+          <Property Name="delete" Type="Int32" />
+          <NavigationProperty Name="Pavilion" Relationship="Model.FK_Pavilion_SEC" FromRole="SEC" ToRole="Pavilion" />
+          <NavigationProperty Name="Type1" Relationship="Model.FK_SEC_Type" FromRole="SEC" ToRole="Type" />
+        </EntityType>
+        <EntityType Name="Type">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="SEC" Relationship="Model.FK_SEC_Type" FromRole="Type" ToRole="SEC" />
+        </EntityType>
+        <Association Name="FK_Pavilion_SEC">
+          <End Type="Model.SEC" Role="SEC" Multiplicity="1" />
+          <End Type="Model.Pavilion" Role="Pavilion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SEC">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Pavilion">
+              <PropertyRef Name="SEC" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SEC_Type">
+          <End Type="Model.Type" Role="Type" Multiplicity="1" />
+          <End Type="Model.SEC" Role="SEC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Type">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SEC">
+              <PropertyRef Name="type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -40,6 +168,36 @@
               <MappingFragment StoreEntitySet="Admin">
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="login" ColumnName="login" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pavilion">
+            <EntityTypeMapping TypeName="Model.Pavilion">
+              <MappingFragment StoreEntitySet="Pavilion">
+                <ScalarProperty Name="SEC" ColumnName="SEC" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="pavilion1" ColumnName="pavilion" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SEC">
+            <EntityTypeMapping TypeName="Model.SEC">
+              <MappingFragment StoreEntitySet="SEC">
+                <ScalarProperty Name="delete" ColumnName="delete" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="pass" ColumnName="pass" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Type">
+            <EntityTypeMapping TypeName="Model.Type">
+              <MappingFragment StoreEntitySet="Type">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
