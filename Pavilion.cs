@@ -15,9 +15,9 @@ namespace SEC_Control
     public partial class Pavilion
     {
         public int id { get; set; }
-        public string pavilion1 { get; set; }
         public string name { get; set; }
         public int SEC { get; set; }
+        public int number { get; set; }
     
         public virtual SEC SEC1 { get; set; }
     }

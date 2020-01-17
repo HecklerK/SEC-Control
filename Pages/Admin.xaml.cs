@@ -43,7 +43,7 @@ namespace SEC_Control.Pages
             }
         }
 
-        void UpdatePavilion()
+        void updatePavilion()
         {
             list2.Items.Clear();
             using(var db = new DBEntities())
@@ -52,9 +52,47 @@ namespace SEC_Control.Pages
                     .Where(a => a.SEC == List1.SelectedIndex + 1);
                 foreach (var p in pav)
                 {
-                    if (p.name == null || p.name == "") list2.Items.Add("№ " + p.pavilion1);
-                    else list2.Items.Add(p.name + "(№ " + p.pavilion1 +")");
+                    list2.Items.Add(p.number);
                 }
+            }
+        }
+
+        void updateInfoSEC()
+        {
+            using (var db = new DBEntities())
+            {
+                var sec = db.SEC
+                    .Join(db.Type,
+                    typeID => typeID.type,
+                    typeN => typeN.id,
+                    (typeID, typeN) => new { ID = typeID, N = typeN })
+                    .Where(p => p.ID.id == List1.SelectedIndex + 1);
+                foreach (var s in sec)
+                {
+                    tb_name.Text = s.ID.name;
+                    tb_type.Text = s.N.name;
+                    tb_phone.Text = s.ID.phone.ToString();
+                }
+            }
+        }
+
+        void updateInfoPav()
+        {
+            if (list2.SelectedIndex != -1)
+                using (var db = new DBEntities())
+                {
+                    var pav = db.Pavilion
+                        .Where(p => p.SEC == List1.SelectedIndex + 1 && p.number.ToString() == list2.SelectedItem.ToString());
+                    foreach (var p in pav)
+                    {
+                        tb_pav.Text = p.number.ToString();
+                        tb_p_n.Text = p.name; 
+                    }
+                }
+            else
+            {
+                tb_pav.Text = "";
+                tb_p_n.Text = "";
             }
         }
 
@@ -70,7 +108,13 @@ namespace SEC_Control.Pages
 
         private void List1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdatePavilion();
+            updatePavilion();
+            updateInfoSEC();
+        }
+
+        private void list2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            updateInfoPav();
         }
     }
 }

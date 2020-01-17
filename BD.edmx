@@ -17,7 +17,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" />
-          <Property Name="pavilion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="number" Type="int" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="50" />
           <Property Name="SEC" Type="int" Nullable="false" />
         </EntityType>
@@ -107,10 +107,10 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="pavilion1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="SEC" Type="Int32" Nullable="false" />
           <NavigationProperty Name="SEC1" Relationship="Model.FK_Pavilion_SEC" FromRole="Pavilion" ToRole="SEC" />
+          <Property Name="number" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="SEC">
           <Key>
@@ -174,9 +174,9 @@
           <EntitySetMapping Name="Pavilion">
             <EntityTypeMapping TypeName="Model.Pavilion">
               <MappingFragment StoreEntitySet="Pavilion">
+                <ScalarProperty Name="number" ColumnName="number" />
                 <ScalarProperty Name="SEC" ColumnName="SEC" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="pavilion1" ColumnName="pavilion" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
