@@ -26,6 +26,8 @@ namespace SEC_Control
         public int type { get; set; }
         public Nullable<int> phone { get; set; }
         public Nullable<int> delete { get; set; }
+        public int inn { get; set; }
+        public string login { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Pavilion> Pavilion { get; set; }

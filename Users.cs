@@ -12,9 +12,10 @@ namespace SEC_Control
     using System;
     using System.Collections.Generic;
     
-    public partial class Admin
+    public partial class Users
     {
         public string login { get; set; }
         public string password { get; set; }
+        public int type { get; set; }
     }
 }

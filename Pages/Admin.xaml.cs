@@ -20,7 +20,7 @@ namespace SEC_Control.Pages
     /// </summary>
     public partial class Admin : Page
     {
-        public Admin(Login.Ad var)
+        public Admin(Login.Us var)
         {
             InitializeComponent();
             login.Content = var.login;
@@ -28,7 +28,7 @@ namespace SEC_Control.Pages
 
         void UpdateSEC()
         {
-            List1.Items.Clear();
+            list1.Items.Clear();
             using (var db = new DBEntities())
             {
                 var sec = db.SEC;
@@ -38,7 +38,12 @@ namespace SEC_Control.Pages
                     if (s.type == 1) name = "ТЦ";
                     else if (s.type == 2) name = "ТРЦ";
                     name += " " + s.name;
-                    List1.Items.Add(name);
+                    list1.Items.Add(name);
+                }
+                var type = db.Type;
+                foreach (var t in type)
+                {
+                    tb_type.Items.Add(t.name);
                 }
             }
         }
@@ -49,7 +54,7 @@ namespace SEC_Control.Pages
             using(var db = new DBEntities())
             {
                 var pav = db.Pavilion
-                    .Where(a => a.SEC == List1.SelectedIndex + 1);
+                    .Where(a => a.SEC == list1.SelectedIndex + 1);
                 foreach (var p in pav)
                 {
                     list2.Items.Add(p.number);
@@ -66,12 +71,15 @@ namespace SEC_Control.Pages
                     typeID => typeID.type,
                     typeN => typeN.id,
                     (typeID, typeN) => new { ID = typeID, N = typeN })
-                    .Where(p => p.ID.id == List1.SelectedIndex + 1);
+                    .Where(p => p.ID.id == list1.SelectedIndex + 1);
                 foreach (var s in sec)
                 {
+                    tb_inn.Text = s.ID.inn.ToString();
                     tb_name.Text = s.ID.name;
                     tb_type.Text = s.N.name;
                     tb_phone.Text = s.ID.phone.ToString();
+                    tb_login.Text = s.ID.login;
+                    tb_pass.Text = s.ID.pass;
                 }
             }
         }
@@ -82,7 +90,7 @@ namespace SEC_Control.Pages
                 using (var db = new DBEntities())
                 {
                     var pav = db.Pavilion
-                        .Where(p => p.SEC == List1.SelectedIndex + 1 && p.number.ToString() == list2.SelectedItem.ToString());
+                        .Where(p => p.SEC == list1.SelectedIndex + 1 && p.number.ToString() == list2.SelectedItem.ToString());
                     foreach (var p in pav)
                     {
                         tb_pav.Text = p.number.ToString();
@@ -115,6 +123,85 @@ namespace SEC_Control.Pages
         private void list2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             updateInfoPav();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            tb_inn.Text = "";
+            tb_name.Text = "";
+            tb_type.Text = "";
+            tb_phone.Text = "";
+            tb_login.Text = "";
+            tb_pass.Text = "";
+            tb_pav.Text = "";
+            tb_p_n.Text = "";
+            but.Content = "Отмена";
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            using (var db = new DBEntities())
+            {
+                if (but.Content != "Отмена")
+                {
+                    if (list1.SelectedIndex != -1)
+                    {
+                        var sec = db.SEC
+                            .Join(db.Type,
+                            typeID => typeID.type,
+                            typeN => typeN.id,
+                            (typeID, typeN) => new { ID = typeID, N = typeN })
+                            .Where(p => p.ID.id == list1.SelectedIndex + 1)
+                            .FirstOrDefault();
+                        var s = sec;
+                        s.ID.inn = Convert.ToInt32(tb_inn.Text);
+                        s.ID.name = tb_name.Text;
+                        s.N.name = tb_type.Text;
+                        s.ID.phone = Convert.ToInt32(tb_phone.Text);
+                        s.ID.login = tb_login.Text;
+                        s.ID.pass = tb_pass.Text;
+                        db.SaveChanges();
+                    }
+                    if (list2.SelectedIndex != -1)
+                    {
+                        var pav = db.Pavilion
+                            .Where(p => p.SEC == list1.SelectedIndex + 1 && p.number.ToString() == list2.SelectedItem.ToString())
+                            .FirstOrDefault();
+                        var pa = pav;
+                        pa.number = Convert.ToInt32(tb_pav.Text);
+                        pa.name = tb_p_n.Text;
+                        db.SaveChanges();
+                    }
+                }
+                else
+                {
+                    if (tb_inn.Text != "" && tb_name.Text != "" && tb_type.Text != "" && tb_login.Text != "" && tb_pass.Text != "")
+                    {
+                        var t = db.Type
+                            .Where(ty => ty.name == tb_type.Text)
+                            .FirstOrDefault();
+                        SEC s = new SEC
+                        {
+                            inn = Convert.ToInt32(tb_inn.Text),
+                            name = tb_name.Text,
+                            type = t.id,
+                            login = tb_login.Text,
+                            pass = tb_pass.Text,
+                            phone = Convert.ToInt32(tb_phone.Text)
+                        };
+                        var sec = db.SEC;
+                        sec.Add(s);
+                        db.SaveChanges();
+                        UpdateSEC();
+                        but.Content = "Добавить админа";
+                    }
+                }
+            }
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

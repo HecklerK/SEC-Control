@@ -24,10 +24,10 @@ namespace SEC_Control.Pages
         {
             InitializeComponent();
         }
-        public class Ad
+        public class Us
         {
             public string login;
-            public Ad(string a)
+            public Us(string a)
             {
                 login = a;
             }
@@ -39,20 +39,24 @@ namespace SEC_Control.Pages
             {
                 if (pass.Password.Length > 0)
                 {
-                    if(admin.IsChecked == true)
+                    using (var db = new DBEntities())
                     {
-                        using (var db = new DBEntities())
+                        var user = db.Users
+                            .AsNoTracking()
+                            .FirstOrDefault(u => u.login == login.Text && u.password == pass.Password);
+                        if (user == null)
                         {
-                            var user = db.Admin
-                                .AsNoTracking()
-                                .FirstOrDefault(u => u.login == login.Text && u.password == pass.Password);
-                            if (user == null)
-                            {
-                                MessageBox.Show("Пользователь не найден");
-                                return;
-                            }
-                            Ad cs = new Ad(user.login);
-                            NavigationService.Navigate(new Admin(cs));
+                            MessageBox.Show("Пользователь не найден");
+                            return;
+                        }
+                        Us cs = new Us(user.login);
+                        switch (user.type)
+                        {
+                            case 0:
+                                NavigationService.Navigate(new Admin(cs));
+                                break;
+                            default:
+                                break;
                         }
                     }
                 }

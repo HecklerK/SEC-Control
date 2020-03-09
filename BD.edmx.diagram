@@ -5,12 +5,12 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="bc4d9d4e337048019616fc28659244bc" Name="Diagram1" >
-        <EntityTypeShape EntityType="Model.Admin" Width="1.5" PointX="0.5" PointY="0.875" />
         <EntityTypeShape EntityType="Model.Pavilion" Width="1.5" PointX="0.5" PointY="2.625" />
         <EntityTypeShape EntityType="Model.SEC" Width="1.5" PointX="3.375" PointY="2.25" />
         <EntityTypeShape EntityType="Model.Type" Width="1.5" PointX="5.5" PointY="2.875" />
         <AssociationConnector Association="Model.FK_Pavilion_SEC" ></AssociationConnector>
         <AssociationConnector Association="Model.FK_SEC_Type" />
+        <EntityTypeShape EntityType="Model.Users" Width="1.5" PointX="0.5" PointY="0.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
