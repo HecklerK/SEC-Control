@@ -29,8 +29,8 @@ namespace SEC_Control
         public int inn { get; set; }
         public string login { get; set; }
     
+        public virtual Type Type1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Pavilion> Pavilion { get; set; }
-        public virtual Type Type1 { get; set; }
     }
 }

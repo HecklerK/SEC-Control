@@ -25,9 +25,9 @@ namespace SEC_Control
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Pavilion> Pavilion { get; set; }
         public virtual DbSet<SEC> SEC { get; set; }
         public virtual DbSet<Type> Type { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Pavilion> Pavilion { get; set; }
     }
 }

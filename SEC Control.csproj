@@ -64,6 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FormCol.xaml.cs">
+      <DependentUpon>FormCol.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pavilion.cs">
       <DependentUpon>BD.tt</DependentUpon>
     </Compile>
@@ -76,6 +79,10 @@
     <Compile Include="Users.cs">
       <DependentUpon>BD.tt</DependentUpon>
     </Compile>
+    <Page Include="FormCol.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

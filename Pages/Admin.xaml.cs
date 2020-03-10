@@ -20,6 +20,8 @@ namespace SEC_Control.Pages
     /// </summary>
     public partial class Admin : Page
     {
+        int b = 0;
+
         public Admin(Login.Us var)
         {
             InitializeComponent();
@@ -135,14 +137,14 @@ namespace SEC_Control.Pages
             tb_pass.Text = "";
             tb_pav.Text = "";
             tb_p_n.Text = "";
-            but.Content = "Отмена";
+            b = 1;
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             using (var db = new DBEntities())
             {
-                if (but.Content != "Отмена")
+                if (b != 1)
                 {
                     if (list1.SelectedIndex != -1)
                     {
@@ -165,12 +167,22 @@ namespace SEC_Control.Pages
                     if (list2.SelectedIndex != -1)
                     {
                         var pav = db.Pavilion
-                            .Where(p => p.SEC == list1.SelectedIndex + 1 && p.number.ToString() == list2.SelectedItem.ToString())
+                            .Where(p => p.SEC == list1.SelectedIndex + 1);
+                        int[] mas = new int[pav.Count()];
+                        int i = 0;
+                        foreach (var p in pav)
+                        {
+                            mas[i] = p.id;
+                            i++;
+                        }
+                        var tmp = mas[list2.SelectedIndex];
+                        var pa = db.Pavilion
+                            .Where(p => p.id == tmp)
                             .FirstOrDefault();
-                        var pa = pav;
                         pa.number = Convert.ToInt32(tb_pav.Text);
                         pa.name = tb_p_n.Text;
                         db.SaveChanges();
+                        updatePavilion();
                     }
                 }
                 else
@@ -193,7 +205,7 @@ namespace SEC_Control.Pages
                         sec.Add(s);
                         db.SaveChanges();
                         UpdateSEC();
-                        but.Content = "Добавить админа";
+                        b = 0;
                     }
                 }
             }
@@ -201,7 +213,29 @@ namespace SEC_Control.Pages
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-
+            FormCol dialog = new FormCol();
+            if (dialog.ShowDialog() == true && list1.SelectedIndex != -1)
+                using (var db = new DBEntities())
+                {
+                    var p = db.Pavilion
+                        .Where(pa => pa.SEC == list1.SelectedIndex + 1)
+                        .Count();
+                    var pav = db.Pavilion;
+                    p++;
+                    for (int i = p; i < p + dialog.number; i++)
+                    {
+                        Pavilion pa = new Pavilion
+                        {
+                            number = i,
+                            name = "",
+                            SEC = list1.SelectedIndex + 1
+                        };
+                        pav.Add(pa);
+                    }
+                    db.SaveChanges();
+                    updatePavilion();
+                }
+            else MessageBox.Show("Создание отменено");
         }
     }
 }
