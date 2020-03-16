@@ -22,6 +22,12 @@ namespace SEC_Control.Pages
     {
         int b = 0;
 
+        public class pavi
+        {
+            public int id { get; set; }
+            public string name { get; set; }
+        }
+
         public Admin(Login.Us var)
         {
             InitializeComponent();
@@ -33,16 +39,18 @@ namespace SEC_Control.Pages
             list1.Items.Clear();
             using (var db = new DBEntities())
             {
-                var sec = db.SEC;
+                var sec = db.SECs
+                    .Take(30);
                 foreach (var s in sec)
                 {
                     string name = "";
-                    if (s.type == 1) name = "ТЦ";
-                    else if (s.type == 2) name = "ТРЦ";
+                    foreach (var t in db.Types)
+                        if (s.type == t.id) name = t.name;
                     name += " " + s.name;
                     list1.Items.Add(name);
                 }
-                var type = db.Type;
+                tb_type.Items.Clear();
+                var type = db.Types;
                 foreach (var t in type)
                 {
                     tb_type.Items.Add(t.name);
@@ -55,11 +63,16 @@ namespace SEC_Control.Pages
             list2.Items.Clear();
             using(var db = new DBEntities())
             {
-                var pav = db.Pavilion
+                var pav = db.Pavilions
                     .Where(a => a.SEC == list1.SelectedIndex + 1);
                 foreach (var p in pav)
                 {
-                    list2.Items.Add(p.number);
+                    pavi Data = new pavi
+                    {
+                        id = p.number,
+                        name = p.name
+                    };
+                    list2.Items.Add(Data);
                 }
             }
         }
@@ -68,8 +81,8 @@ namespace SEC_Control.Pages
         {
             using (var db = new DBEntities())
             {
-                var sec = db.SEC
-                    .Join(db.Type,
+                var sec = db.SECs
+                    .Join(db.Types,
                     typeID => typeID.type,
                     typeN => typeN.id,
                     (typeID, typeN) => new { ID = typeID, N = typeN })
@@ -91,13 +104,13 @@ namespace SEC_Control.Pages
             if (list2.SelectedIndex != -1)
                 using (var db = new DBEntities())
                 {
-                    var pav = db.Pavilion
-                        .Where(p => p.SEC == list1.SelectedIndex + 1 && p.number.ToString() == list2.SelectedItem.ToString());
-                    foreach (var p in pav)
-                    {
-                        tb_pav.Text = p.number.ToString();
-                        tb_p_n.Text = p.name; 
-                    }
+                    dynamic si = list2.SelectedItem;
+                    int id = Convert.ToInt32(si.id);
+                    var pav = db.Pavilions
+                            .Where(p => p.SEC == list1.SelectedIndex + 1 && p.number == id)
+                            .FirstOrDefault();
+                    tb_pav.Text = pav.number.ToString();
+                    tb_p_n.Text = pav.name;
                 }
             else
             {
@@ -148,8 +161,8 @@ namespace SEC_Control.Pages
                 {
                     if (list1.SelectedIndex != -1)
                     {
-                        var sec = db.SEC
-                            .Join(db.Type,
+                        var sec = db.SECs
+                            .Join(db.Types,
                             typeID => typeID.type,
                             typeN => typeN.id,
                             (typeID, typeN) => new { ID = typeID, N = typeN })
@@ -158,15 +171,17 @@ namespace SEC_Control.Pages
                         var s = sec;
                         s.ID.inn = Convert.ToInt32(tb_inn.Text);
                         s.ID.name = tb_name.Text;
-                        s.N.name = tb_type.Text;
+                        foreach (var t in db.Types)
+                            if (t.name == tb_type.Text) s.ID.type = t.id;
                         s.ID.phone = Convert.ToInt32(tb_phone.Text);
                         s.ID.login = tb_login.Text;
                         s.ID.pass = tb_pass.Text;
                         db.SaveChanges();
+                        UpdateSEC();
                     }
                     if (list2.SelectedIndex != -1)
                     {
-                        var pav = db.Pavilion
+                        var pav = db.Pavilions
                             .Where(p => p.SEC == list1.SelectedIndex + 1);
                         int[] mas = new int[pav.Count()];
                         int i = 0;
@@ -176,7 +191,7 @@ namespace SEC_Control.Pages
                             i++;
                         }
                         var tmp = mas[list2.SelectedIndex];
-                        var pa = db.Pavilion
+                        var pa = db.Pavilions
                             .Where(p => p.id == tmp)
                             .FirstOrDefault();
                         pa.number = Convert.ToInt32(tb_pav.Text);
@@ -187,9 +202,9 @@ namespace SEC_Control.Pages
                 }
                 else
                 {
-                    if (tb_inn.Text != "" && tb_name.Text != "" && tb_type.Text != "" && tb_login.Text != "" && tb_pass.Text != "")
+                    if (tb_inn.Text != "" && tb_name.Text != "" && tb_type.Text != "" && tb_login.Text != "" && tb_pass.Text != "" && tb_phone.Text != "")
                     {
-                        var t = db.Type
+                        var t = db.Types
                             .Where(ty => ty.name == tb_type.Text)
                             .FirstOrDefault();
                         SEC s = new SEC
@@ -201,7 +216,7 @@ namespace SEC_Control.Pages
                             pass = tb_pass.Text,
                             phone = Convert.ToInt32(tb_phone.Text)
                         };
-                        var sec = db.SEC;
+                        var sec = db.SECs;
                         sec.Add(s);
                         db.SaveChanges();
                         UpdateSEC();
@@ -217,10 +232,10 @@ namespace SEC_Control.Pages
             if (dialog.ShowDialog() == true && list1.SelectedIndex != -1)
                 using (var db = new DBEntities())
                 {
-                    var p = db.Pavilion
+                    var p = db.Pavilions
                         .Where(pa => pa.SEC == list1.SelectedIndex + 1)
                         .Count();
-                    var pav = db.Pavilion;
+                    var pav = db.Pavilions;
                     p++;
                     for (int i = p; i < p + dialog.number; i++)
                     {

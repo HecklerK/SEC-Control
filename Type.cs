@@ -17,13 +17,13 @@ namespace SEC_Control
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Type()
         {
-            this.SEC = new HashSet<SEC>();
+            this.SECs = new HashSet<SEC>();
         }
     
         public int id { get; set; }
         public string name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SEC> SEC { get; set; }
+        public virtual ICollection<SEC> SECs { get; set; }
     }
 }
