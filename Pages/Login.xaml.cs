@@ -46,7 +46,16 @@ namespace SEC_Control.Pages
                             .FirstOrDefault(u => u.login == login.Text && u.password == pass.Password);
                         if (user == null)
                         {
-                            MessageBox.Show("Пользователь не найден");
+                            var sec = db.SECs
+                                .AsNoTracking()
+                                .FirstOrDefault(s => s.login == login.Text && s.pass == pass.Password);
+                            if (sec == null)
+                            {
+                                MessageBox.Show("Пользователь не найден");
+                                return;
+                            }
+                            Us c = new Us(sec.login);
+                            NavigationService.Navigate(new Users(c));
                             return;
                         }
                         Us cs = new Us(user.login);
@@ -63,6 +72,22 @@ namespace SEC_Control.Pages
                 else MessageBox.Show("Введите пароль");
             }
             else MessageBox.Show("Введите логин");
+        }
+
+        private void login_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.c = c_login.IsChecked.Value;
+            if (c_login.IsChecked == true && login.Text != "")
+            {
+                Properties.Settings.Default.Login = login.Text;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            c_login.IsChecked = Properties.Settings.Default.c;
+            if (c_login.IsChecked == true) login.Text = Properties.Settings.Default.Login;
         }
     }
 }

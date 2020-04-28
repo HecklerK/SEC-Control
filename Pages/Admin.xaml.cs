@@ -28,6 +28,13 @@ namespace SEC_Control.Pages
             public string name { get; set; }
         }
 
+        public class sece
+        {
+            public int inn { get; set; }
+            public int kpp { get; set; }
+            public string name { get; set; }
+        }
+
         public Admin(Login.Us var)
         {
             InitializeComponent();
@@ -47,7 +54,13 @@ namespace SEC_Control.Pages
                     foreach (var t in db.Types)
                         if (s.type == t.id) name = t.name;
                     name += " " + s.name;
-                    list1.Items.Add(name);
+                    sece Data = new sece
+                    {
+                        inn = s.inn,
+                        kpp = s.kpp,
+                        name = name
+                    };
+                    list1.Items.Add(Data);
                 }
                 tb_type.Items.Clear();
                 var type = db.Types;
@@ -90,6 +103,7 @@ namespace SEC_Control.Pages
                 foreach (var s in sec)
                 {
                     tb_inn.Text = s.ID.inn.ToString();
+                    tb_kpp.Text = s.ID.kpp.ToString();
                     tb_name.Text = s.ID.name;
                     tb_type.Text = s.N.name;
                     tb_phone.Text = s.ID.phone.ToString();
@@ -142,7 +156,11 @@ namespace SEC_Control.Pages
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            l_state.Content = "Создание";
+            list1.IsEnabled = false;
+            list2.IsEnabled = false;
             tb_inn.Text = "";
+            tb_kpp.Text = "";
             tb_name.Text = "";
             tb_type.Text = "";
             tb_phone.Text = "";
@@ -170,6 +188,7 @@ namespace SEC_Control.Pages
                             .FirstOrDefault();
                         var s = sec;
                         s.ID.inn = Convert.ToInt32(tb_inn.Text);
+                        s.ID.kpp = Convert.ToInt32(tb_kpp.Text);
                         s.ID.name = tb_name.Text;
                         foreach (var t in db.Types)
                             if (t.name == tb_type.Text) s.ID.type = t.id;
@@ -210,6 +229,7 @@ namespace SEC_Control.Pages
                         SEC s = new SEC
                         {
                             inn = Convert.ToInt32(tb_inn.Text),
+                            kpp = Convert.ToInt32(tb_kpp.Text),
                             name = tb_name.Text,
                             type = t.id,
                             login = tb_login.Text,
@@ -220,6 +240,9 @@ namespace SEC_Control.Pages
                         sec.Add(s);
                         db.SaveChanges();
                         UpdateSEC();
+                        l_state.Content = "Изменение";
+                        list1.IsEnabled = true;
+                        list2.IsEnabled = true;
                         b = 0;
                     }
                 }
@@ -251,6 +274,32 @@ namespace SEC_Control.Pages
                     updatePavilion();
                 }
             else MessageBox.Show("Создание отменено");
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            l_state.Content = "Изменение";
+            list1.SelectedIndex = -1;
+            list2.SelectedIndex = -1;
+            list1.IsEnabled = true;
+            list2.IsEnabled = true;
+            b = 1;
+        }
+
+        private void b_gen_Click(object sender, RoutedEventArgs e)
+        {
+            string rand = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabsdefghijklmnopqrstuvwxyz";
+            Random rnd = new Random(DateTime.Now.Millisecond);
+            if (tb_inn.Text.Length >= 9 && tb_kpp.Text.Length >= 9)
+            {
+                tb_login.Text = "";
+                tb_pass.Text = "";
+                tb_login.Text = tb_inn.Text.Substring(0, 4) + tb_kpp.Text.Substring(5, 4) + rand[Convert.ToInt32(tb_inn.Text.Substring(3, 1)) + 10];
+                for (int i = 0; i < 8; i++)
+                {
+                    tb_pass.Text += rand[rnd.Next(0, rand.Length)];
+                }
+            }
         }
     }
 }

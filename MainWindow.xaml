@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SEC_Control"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" MinWidth="720" MinHeight="450" WindowState="Maximized">
+        Title="MainWindow" Height="450" Width="1000" MinWidth="1000" MinHeight="450" WindowState="Maximized">
     <Grid>
         <Frame x:Name="frame" Content="" Margin="0" Source="/SEC Control;component/Pages/Login.xaml" NavigationUIVisibility="Hidden"/>
     </Grid>

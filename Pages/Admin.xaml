@@ -24,28 +24,44 @@
         </Grid.RowDefinitions>
         <Label x:Name="login" Content="" HorizontalContentAlignment="Center" Grid.Row="0" Margin="0" FontSize="16"/>
         <Button Content="Выход" HorizontalAlignment="Right" Padding="0,0,0,0"  Grid.Column="4" Margin="0,0,0,0" Width="100" FontSize="16" Click="Button_Click"/>
-        <ListBox x:Name="list1" Grid.Column="1"  Margin="0,0,0,0" Grid.Row="1" FontSize="20" Grid.RowSpan="2" SelectionChanged="List1_SelectionChanged" Grid.ColumnSpan="2"/>
+        <ListView x:Name="list1" Grid.Column="1"  Margin="0,0,0,0" Grid.Row="1" FontSize="20" Grid.RowSpan="2" SelectionChanged="List1_SelectionChanged" Grid.ColumnSpan="2">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn x:Name="lb1_inn" Width="auto" DisplayMemberBinding="{Binding inn}">ИНН</GridViewColumn>
+                    <GridViewColumn x:Name="lb1_kpp" Width="auto" DisplayMemberBinding="{Binding kpp}">КПП</GridViewColumn>
+                    <GridViewColumn x:Name="lb1_name" Width="auto" DisplayMemberBinding="{Binding name}">Название</GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
         <Button Content="+" Grid.Column="1" Margin="0,0,0,0" Grid.Row="3" FontSize="20" Click="Button_Click_1"/>
         <ListView x:Name="list2" Grid.Column="3" Margin="0,0,0,0" Grid.Row="1" Grid.RowSpan="2" SelectionChanged="list2_SelectionChanged" Grid.ColumnSpan="2" FontSize="20">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn x:Name="lb_number" Width="auto" DisplayMemberBinding="{Binding id}">№</GridViewColumn>
-                    <GridViewColumn x:Name="lb_name" Width="300" DisplayMemberBinding="{Binding name}">название</GridViewColumn>
+                    <GridViewColumn x:Name="lb2_number" Width="auto" DisplayMemberBinding="{Binding id}">№</GridViewColumn>
+                    <GridViewColumn x:Name="lb2_name" Width="300" DisplayMemberBinding="{Binding name}">название</GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
         <Button Content="+" Grid.Column="3" Margin="0,0,0,0" Grid.Row="3" FontSize="20" Click="Button_Click_3"/>
-        <TextBlock Margin="2,0,0,0" Grid.Row="1">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+            <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="True">
+                <TextBlock Margin="2,0,0,0" Grid.Row="1">
             <TextBlock Margin="0,-5,2,0" FontSize="20">
                 ИНН: 
             </TextBlock>
-            <TextBox x:Name="tb_inn" TextWrapping="Wrap" BorderThickness="0" FontSize="20">
+            <TextBox x:Name="tb_inn" MaxLength="12" TextWrapping="Wrap" BorderThickness="0" FontSize="20">
+            </TextBox>
+            <LineBreak/>
+            <TextBlock Margin="0,-5,2,0" FontSize="20">
+                КПП:
+            </TextBlock>
+            <TextBox x:Name="tb_kpp" MaxLength="9" TextWrapping="Wrap" BorderThickness="0" FontSize="20">
             </TextBox>
             <LineBreak/>
             <TextBlock Margin="0,-5,2,0" FontSize="20">
                 Название: 
             </TextBlock>
-            <TextBox x:Name="tb_name" TextWrapping="Wrap" BorderThickness="0" FontSize="20">
+            <TextBox x:Name="tb_name" MaxLength="50" MaxWidth="197" TextWrapping="Wrap" BorderThickness="0" FontSize="20">
             </TextBox>
             <LineBreak/>
             <TextBlock Margin="0,-5,2,0" FontSize="20">
@@ -63,15 +79,21 @@
             <TextBlock Margin="0,-5,2,0" FontSize="20">
                 Логин: 
             </TextBlock>
-            <TextBox x:Name="tb_login" TextWrapping="Wrap" BorderThickness="0" FontSize="20">
+            <TextBox x:Name="tb_login" TextWrapping="Wrap" BorderThickness="0" FontSize="20" IsEnabled="False">
             </TextBox>
+                    <LineBreak/>
             <TextBlock Margin="0,-5,2,0" FontSize="20">
                 Пароль: 
             </TextBlock>
-            <TextBox x:Name="tb_pass" TextWrapping="Wrap" IsReadOnly="False" BorderThickness="0" FontSize="20">
+            <TextBox x:Name="tb_pass" TextWrapping="Wrap" IsReadOnly="False" BorderThickness="0" FontSize="20" IsEnabled="False">
             </TextBox>
+                    <Button x:Name="b_gen" Content="⟳" FontSize="20" Click="b_gen_Click"/>
         </TextBlock>
-        <TextBlock Margin="2,0,0,0" Grid.Row="2">
+            </ScrollViewer>
+        </Border>
+        <Border Grid.Row="2" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+            <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="True">
+                <TextBlock Margin="2,0,0,0" Grid.Row="2">
             <TextBlock Margin="0,-5,2,0" FontSize="20">
                 Номер павильона: 
             </TextBlock>
@@ -83,10 +105,20 @@
             </TextBlock>
             <TextBox x:Name="tb_p_n" TextWrapping="Wrap" BorderThickness="0" FontSize="20">
             </TextBox>
+                <LineBreak/>
+            <TextBlock Margin="0,-5,2,0" FontSize="20">
+                Описание: 
+            </TextBlock>
+                <LineBreak/>
+            <TextBox x:Name="tb_p_o" TextWrapping="Wrap" BorderThickness="0" FontSize="20" Width="297" ScrollViewer.CanContentScroll="True">
+            </TextBox>
         </TextBlock>
+            </ScrollViewer>
+        </Border>
         <Button Content="Сохранить" Margin="0,0" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" FontSize="20" Click="Button_Click_2" Width="99"/>
-        <Button Name="but" Content="отмена" Margin="0,0" Padding="0" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="0" FontSize="20" Click="Button_Click_2" Width="68"/>
+        <Button Name="but" Content="отмена" Margin="0,0" Padding="0" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="0" FontSize="20" Click="Button_Click_4" Width="68"/>
         <Button Content="-" Grid.Column="2" Margin="0,0,0,0" Grid.Row="3" FontSize="20"/>
         <Button Content="-" Grid.Column="4" Margin="0,0,0,0" Grid.Row="3" FontSize="20"/>
+        <Label Name="l_state" Content="Изменение" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-2" Margin="99,0,68,0" Grid.Row="3" Width="153" FontSize="20"/>
     </Grid>
 </Page>
