@@ -22,7 +22,7 @@
         <TextBox x:Name="login" Grid.Column="1" Margin="0,40,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20" Height="30" TextChanged="login_Checked"/>
         <Label Content="Пароль" HorizontalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Margin="0,70,0,0" FontSize="20" Height="40" VerticalAlignment="Top"/>
         <PasswordBox x:Name="pass" Grid.Column="1" Margin="0,110,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="20" Height="30"/>
-        <CheckBox x:Name="c_login" HorizontalContentAlignment="Left" Content="Запомнить пароль" Grid.Column="1" Margin="0,140" Grid.Row="1" FontSize="20" VerticalAlignment="Top" Click="login_Checked"/>
+        <CheckBox x:Name="c_login" HorizontalContentAlignment="Left" Content="Запомнить логин" Grid.Column="1" Margin="0,140" Grid.Row="1" FontSize="20" VerticalAlignment="Top" Click="login_Checked" BorderBrush="White"/>
         <Button Content="Вход" Grid.Column="1" Margin="0,170,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="20" Click="Button_Click"/>
     </Grid>
 </Page>

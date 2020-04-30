@@ -21,23 +21,23 @@
         </Grid.RowDefinitions>
         <Label x:Name="login" Content="" HorizontalContentAlignment="Center" Grid.Row="0" Margin="0,0,120,0" FontSize="16"/>
         <Button Content="Выход" HorizontalAlignment="Right" Padding="0,0,0,0"  Grid.Column="1" Margin="0,0,0,0" Width="100" FontSize="16" Click="Button_Click"/>
-        <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
+        <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="0,0,0,0">
             <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="True">
                 <TextBlock Margin="2,0,0,0" Grid.Row="1">
                     <TextBlock Margin="0,-5,2,0" FontSize="20">
                         ИНН: 
                     </TextBlock>
-                    <TextBlock x:Name="tb_inn" TextWrapping="Wrap" FontSize="20"/>
+                    <TextBlock x:Name="tb_inn" Margin="0, -5, 2, 0" TextWrapping="Wrap" FontSize="20"/>
                     <LineBreak/>
                     <TextBlock Margin="0,-5,2,0" FontSize="20">
                         КПП:
                     </TextBlock>
-                    <TextBlock x:Name="tb_kpp" TextWrapping="Wrap" FontSize="20"/>
+                    <TextBlock x:Name="tb_kpp" Margin="0, -5, 2, 0" TextWrapping="Wrap" FontSize="20"/>
                     <LineBreak/>
                     <TextBlock Margin="0,-5,2,0" FontSize="20">
                         Телефон: 
                     </TextBlock>
-                    <TextBox x:Name="tb_phone" TextWrapping="Wrap" BorderThickness="0" FontSize="20">
+                    <TextBox x:Name="tb_phone" TextWrapping="Wrap" BorderThickness="0" FontSize="20" MaxLength="10">
                     </TextBox>
                     <LineBreak/>
                     <TextBlock Margin="0,-5,2,0" FontSize="20">
@@ -48,7 +48,7 @@
                 </TextBlock>
             </ScrollViewer>
         </Border>
-        <Border Grid.Row="2" Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
+        <Border Grid.Row="2" Grid.Column="0" BorderThickness="1" Margin="0,0,0,0">
             <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="True">
                 <TextBlock Margin="2,0,0,0" Grid.Row="2">
                     <TextBlock Margin="0,-5,2,0" FontSize="20">
@@ -67,7 +67,7 @@
                         Описание: 
                     </TextBlock>
                     <LineBreak/>
-                    <TextBox x:Name="tb_p_o" TextWrapping="Wrap" BorderThickness="0" FontSize="20" Width="297" ScrollViewer.CanContentScroll="True">
+                    <TextBox x:Name="tb_p_o" TextWrapping="Wrap" BorderThickness="0" FontSize="20" Width="297" ScrollViewer.CanContentScroll="True" MaxLength="256">
                     </TextBox>
                 </TextBlock>
             </ScrollViewer>
@@ -80,5 +80,6 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <Button Content="Сохранить" Margin="0,0" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" FontSize="20" Click="Button_Click_2" Width="99"/>
     </Grid>
 </Page>

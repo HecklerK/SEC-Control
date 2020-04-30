@@ -125,11 +125,13 @@ namespace SEC_Control.Pages
                             .FirstOrDefault();
                     tb_pav.Text = pav.number.ToString();
                     tb_p_n.Text = pav.name;
+                    tb_p_o.Text = pav.comments;
                 }
             else
             {
                 tb_pav.Text = "";
                 tb_p_n.Text = "";
+                tb_p_o.Text = "";
             }
         }
 
@@ -192,7 +194,7 @@ namespace SEC_Control.Pages
                         s.ID.name = tb_name.Text;
                         foreach (var t in db.Types)
                             if (t.name == tb_type.Text) s.ID.type = t.id;
-                        s.ID.phone = Convert.ToInt32(tb_phone.Text);
+                        s.ID.phone = tb_phone.Text;
                         s.ID.login = tb_login.Text;
                         s.ID.pass = tb_pass.Text;
                         db.SaveChanges();
@@ -215,6 +217,7 @@ namespace SEC_Control.Pages
                             .FirstOrDefault();
                         pa.number = Convert.ToInt32(tb_pav.Text);
                         pa.name = tb_p_n.Text;
+                        pa.comments = tb_p_o.Text;
                         db.SaveChanges();
                         updatePavilion();
                     }
@@ -234,7 +237,7 @@ namespace SEC_Control.Pages
                             type = t.id,
                             login = tb_login.Text,
                             pass = tb_pass.Text,
-                            phone = Convert.ToInt32(tb_phone.Text)
+                            phone = tb_phone.Text
                         };
                         var sec = db.SECs;
                         sec.Add(s);

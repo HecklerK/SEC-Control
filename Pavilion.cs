@@ -18,6 +18,7 @@ namespace SEC_Control
         public int number { get; set; }
         public string name { get; set; }
         public int SEC { get; set; }
+        public string comments { get; set; }
     
         public virtual SEC SEC1 { get; set; }
     }

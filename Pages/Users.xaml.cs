@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-
+using System.Data.Entity.Validation;
 namespace SEC_Control.Pages
 {
     /// <summary>
@@ -69,11 +69,13 @@ namespace SEC_Control.Pages
                             .FirstOrDefault();
                     tb_pav.Text = pav.number.ToString();
                     tb_p_n.Text = pav.name;
+                    tb_p_o.Text = pav.comments;
                 }
             else
             {
                 tb_pav.Text = "";
                 tb_p_n.Text = "";
+                tb_p_o.Text = "";
             }
         }
 
@@ -185,6 +187,38 @@ namespace SEC_Control.Pages
                 case DialogResult.Cancel:
                 default:
                     break;
+            }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            using (var db = new DBEntities())
+            {
+                sec = db.SECs
+                    .FirstOrDefault(p => p.id == sec.id);
+                sec.phone = tb_phone.Text;
+                db.SaveChanges();
+                if (list.SelectedIndex != -1)
+                {
+                    var pav = db.Pavilions
+                        .Where(p => p.SEC == sec.id);
+                    int[] mas = new int[pav.Count()];
+                    int i = 0;
+                    foreach (var p in pav)
+                    {
+                        mas[i] = p.id;
+                        i++;
+                    }
+                    var tmp = mas[list.SelectedIndex];
+                    var pa = db.Pavilions
+                        .Where(p => p.id == tmp)
+                        .FirstOrDefault();
+                    pa.number = Convert.ToInt32(tb_pav.Text);
+                    pa.name = tb_p_n.Text;
+                    pa.comments = tb_p_o.Text;
+                    db.SaveChanges();
+                    updatePavilion();
+                }
             }
         }
     }
