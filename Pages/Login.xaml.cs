@@ -81,6 +81,10 @@ namespace SEC_Control.Pages
             {
                 Properties.Settings.Default.Login = login.Text;
             }
+            else
+            {
+                Properties.Settings.Default.Login = "";
+            }
             Properties.Settings.Default.Save();
         }
 
