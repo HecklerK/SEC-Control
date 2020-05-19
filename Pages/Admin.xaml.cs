@@ -258,29 +258,32 @@ namespace SEC_Control.Pages
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            FormCol dialog = new FormCol();
-            if (dialog.ShowDialog() == true && list1.SelectedIndex != -1)
-                using (var db = new DBEntities())
-                {
-                    var p = db.Pavilions
-                        .Where(pa => pa.SEC == list1.SelectedIndex + 1)
-                        .Count();
-                    var pav = db.Pavilions;
-                    p++;
-                    for (int i = p; i < p + dialog.number; i++)
+            if (list1.SelectedIndex != -1)
+            {
+                FormCol dialog = new FormCol();
+                if (dialog.ShowDialog() == true)
+                    using (var db = new DBEntities())
                     {
-                        Pavilion pa = new Pavilion
+                        var p = db.Pavilions
+                            .Where(pa => pa.SEC == list1.SelectedIndex + 1)
+                            .Count();
+                        var pav = db.Pavilions;
+                        p++;
+                        for (int i = p; i < p + dialog.number; i++)
                         {
-                            number = i,
-                            name = "",
-                            SEC = list1.SelectedIndex + 1
-                        };
-                        pav.Add(pa);
+                            Pavilion pa = new Pavilion
+                            {
+                                number = i,
+                                name = "",
+                                SEC = list1.SelectedIndex + 1
+                            };
+                            pav.Add(pa);
+                        }
+                        db.SaveChanges();
+                        updatePavilion();
                     }
-                    db.SaveChanges();
-                    updatePavilion();
-                }
-            else MessageBox.Show("Создание отменено");
+                else MessageBox.Show("Создание отменено");
+            }
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
