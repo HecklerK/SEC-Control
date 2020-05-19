@@ -179,27 +179,8 @@ namespace SEC_Control.Pages
             {
                 if (b != 1)
                 {
-                    if (list1.SelectedIndex != -1)
-                    {
-                        var sec = db.SECs
-                            .Join(db.Types,
-                            typeID => typeID.type,
-                            typeN => typeN.id,
-                            (typeID, typeN) => new { ID = typeID, N = typeN })
-                            .Where(p => p.ID.id == list1.SelectedIndex + 1)
-                            .FirstOrDefault();
-                        var s = sec;
-                        s.ID.inn = Convert.ToInt32(tb_inn.Text);
-                        s.ID.kpp = Convert.ToInt32(tb_kpp.Text);
-                        s.ID.name = tb_name.Text;
-                        foreach (var t in db.Types)
-                            if (t.name == tb_type.Text) s.ID.type = t.id;
-                        s.ID.phone = tb_phone.Text;
-                        s.ID.login = tb_login.Text;
-                        s.ID.pass = tb_pass.Text;
-                        db.SaveChanges();
-                        UpdateSEC();
-                    }
+                    int l = list1.SelectedIndex;
+                    int l2 = list2.SelectedIndex;
                     if (list2.SelectedIndex != -1)
                     {
                         var pav = db.Pavilions
@@ -221,6 +202,29 @@ namespace SEC_Control.Pages
                         db.SaveChanges();
                         updatePavilion();
                     }
+                    if (list1.SelectedIndex != -1)
+                    {
+                        var sec = db.SECs
+                            .Join(db.Types,
+                            typeID => typeID.type,
+                            typeN => typeN.id,
+                            (typeID, typeN) => new { ID = typeID, N = typeN })
+                            .Where(p => p.ID.id == list1.SelectedIndex + 1)
+                            .FirstOrDefault();
+                        var s = sec;
+                        s.ID.inn = Convert.ToInt32(tb_inn.Text);
+                        s.ID.kpp = Convert.ToInt32(tb_kpp.Text);
+                        s.ID.name = tb_name.Text;
+                        foreach (var t in db.Types)
+                            if (t.name == tb_type.Text) s.ID.type = t.id;
+                        s.ID.phone = tb_phone.Text;
+                        s.ID.login = tb_login.Text;
+                        s.ID.pass = tb_pass.Text;
+                        db.SaveChanges();
+                        UpdateSEC();
+                    }
+                    list1.SelectedIndex = l;
+                    list2.SelectedIndex = l2;
                 }
                 else
                 {
