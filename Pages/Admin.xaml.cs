@@ -175,84 +175,91 @@ namespace SEC_Control.Pages
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            using (var db = new DBEntities())
+            try
             {
-                if (b != 1)
+                using (var db = new DBEntities())
                 {
-                    int l = list1.SelectedIndex;
-                    int l2 = list2.SelectedIndex;
-                    if (list2.SelectedIndex != -1)
+                    if (b != 1)
                     {
-                        var pav = db.Pavilions
-                            .Where(p => p.SEC == list1.SelectedIndex + 1);
-                        int[] mas = new int[pav.Count()];
-                        int i = 0;
-                        foreach (var p in pav)
+                        int l = list1.SelectedIndex;
+                        int l2 = list2.SelectedIndex;
+                        if (list2.SelectedIndex != -1)
                         {
-                            mas[i] = p.id;
-                            i++;
+                            var pav = db.Pavilions
+                                .Where(p => p.SEC == list1.SelectedIndex + 1);
+                            int[] mas = new int[pav.Count()];
+                            int i = 0;
+                            foreach (var p in pav)
+                            {
+                                mas[i] = p.id;
+                                i++;
+                            }
+                            var tmp = mas[list2.SelectedIndex];
+                            var pa = db.Pavilions
+                                .Where(p => p.id == tmp)
+                                .FirstOrDefault();
+                            pa.number = Convert.ToInt32(tb_pav.Text);
+                            pa.name = tb_p_n.Text;
+                            pa.comments = tb_p_o.Text;
+                            db.SaveChanges();
+                            updatePavilion();
                         }
-                        var tmp = mas[list2.SelectedIndex];
-                        var pa = db.Pavilions
-                            .Where(p => p.id == tmp)
-                            .FirstOrDefault();
-                        pa.number = Convert.ToInt32(tb_pav.Text);
-                        pa.name = tb_p_n.Text;
-                        pa.comments = tb_p_o.Text;
-                        db.SaveChanges();
-                        updatePavilion();
-                    }
-                    if (list1.SelectedIndex != -1)
-                    {
-                        var sec = db.SECs
-                            .Join(db.Types,
-                            typeID => typeID.type,
-                            typeN => typeN.id,
-                            (typeID, typeN) => new { ID = typeID, N = typeN })
-                            .Where(p => p.ID.id == list1.SelectedIndex + 1)
-                            .FirstOrDefault();
-                        var s = sec;
-                        s.ID.inn = Convert.ToInt32(tb_inn.Text);
-                        s.ID.kpp = Convert.ToInt32(tb_kpp.Text);
-                        s.ID.name = tb_name.Text;
-                        foreach (var t in db.Types)
-                            if (t.name == tb_type.Text) s.ID.type = t.id;
-                        s.ID.phone = tb_phone.Text;
-                        s.ID.login = tb_login.Text;
-                        s.ID.pass = tb_pass.Text;
-                        db.SaveChanges();
-                        UpdateSEC();
-                    }
-                    list1.SelectedIndex = l;
-                    list2.SelectedIndex = l2;
-                }
-                else
-                {
-                    if (tb_inn.Text != "" && tb_name.Text != "" && tb_type.Text != "" && tb_login.Text != "" && tb_pass.Text != "" && tb_phone.Text != "")
-                    {
-                        var t = db.Types
-                            .Where(ty => ty.name == tb_type.Text)
-                            .FirstOrDefault();
-                        SEC s = new SEC
+                        if (list1.SelectedIndex != -1)
                         {
-                            inn = Convert.ToInt32(tb_inn.Text),
-                            kpp = Convert.ToInt32(tb_kpp.Text),
-                            name = tb_name.Text,
-                            type = t.id,
-                            login = tb_login.Text,
-                            pass = tb_pass.Text,
-                            phone = tb_phone.Text
-                        };
-                        var sec = db.SECs;
-                        sec.Add(s);
-                        db.SaveChanges();
-                        UpdateSEC();
-                        l_state.Content = "Изменение";
-                        list1.IsEnabled = true;
-                        list2.IsEnabled = true;
-                        b = 0;
+                            var sec = db.SECs
+                                .Join(db.Types,
+                                typeID => typeID.type,
+                                typeN => typeN.id,
+                                (typeID, typeN) => new { ID = typeID, N = typeN })
+                                .Where(p => p.ID.id == list1.SelectedIndex + 1)
+                                .FirstOrDefault();
+                            var s = sec;
+                            s.ID.inn = Convert.ToInt32(tb_inn.Text);
+                            s.ID.kpp = Convert.ToInt32(tb_kpp.Text);
+                            s.ID.name = tb_name.Text;
+                            foreach (var t in db.Types)
+                                if (t.name == tb_type.Text) s.ID.type = t.id;
+                            s.ID.phone = tb_phone.Text;
+                            s.ID.login = tb_login.Text;
+                            s.ID.pass = tb_pass.Text;
+                            db.SaveChanges();
+                            UpdateSEC();
+                        }
+                        list1.SelectedIndex = l;
+                        list2.SelectedIndex = l2;
+                    }
+                    else
+                    {
+                        if (tb_inn.Text != "" && tb_name.Text != "" && tb_type.Text != "" && tb_login.Text != "" && tb_pass.Text != "" && tb_phone.Text != "")
+                        {
+                            var t = db.Types
+                                .Where(ty => ty.name == tb_type.Text)
+                                .FirstOrDefault();
+                            SEC s = new SEC
+                            {
+                                inn = Convert.ToInt32(tb_inn.Text),
+                                kpp = Convert.ToInt32(tb_kpp.Text),
+                                name = tb_name.Text,
+                                type = t.id,
+                                login = tb_login.Text,
+                                pass = tb_pass.Text,
+                                phone = tb_phone.Text
+                            };
+                            var sec = db.SECs;
+                            sec.Add(s);
+                            db.SaveChanges();
+                            UpdateSEC();
+                            l_state.Content = "Изменение";
+                            list1.IsEnabled = true;
+                            list2.IsEnabled = true;
+                            b = 0;
+                        }
                     }
                 }
+            }
+            catch (Exception a)
+            {
+                MessageBox.Show(a.Message);
             }
         }
 

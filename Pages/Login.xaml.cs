@@ -35,43 +35,50 @@ namespace SEC_Control.Pages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (login.Text.Length > 0)
+            try
             {
-                if (pass.Password.Length > 0)
+                if (login.Text.Length > 0)
                 {
-                    using (var db = new DBEntities())
+                    if (pass.Password.Length > 0)
                     {
-                        var user = db.Users
-                            .AsNoTracking()
-                            .FirstOrDefault(u => u.login == login.Text && u.password == pass.Password);
-                        if (user == null)
+                        using (var db = new DBEntities())
                         {
-                            var sec = db.SECs
+                            var user = db.Users
                                 .AsNoTracking()
-                                .FirstOrDefault(s => s.login == login.Text && s.pass == pass.Password);
-                            if (sec == null)
+                                .FirstOrDefault(u => u.login == login.Text && u.password == pass.Password);
+                            if (user == null)
                             {
-                                MessageBox.Show("Пользователь не найден");
+                                var sec = db.SECs
+                                    .AsNoTracking()
+                                    .FirstOrDefault(s => s.login == login.Text && s.pass == pass.Password);
+                                if (sec == null)
+                                {
+                                    MessageBox.Show("Пользователь не найден");
+                                    return;
+                                }
+                                Us c = new Us(sec.login);
+                                NavigationService.Navigate(new Users(c));
                                 return;
                             }
-                            Us c = new Us(sec.login);
-                            NavigationService.Navigate(new Users(c));
-                            return;
-                        }
-                        Us cs = new Us(user.login);
-                        switch (user.type)
-                        {
-                            case 0:
-                                NavigationService.Navigate(new Admin(cs));
-                                break;
-                            default:
-                                break;
+                            Us cs = new Us(user.login);
+                            switch (user.type)
+                            {
+                                case 0:
+                                    NavigationService.Navigate(new Admin(cs));
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
+                    else MessageBox.Show("Введите пароль");
                 }
-                else MessageBox.Show("Введите пароль");
+                else MessageBox.Show("Введите логин");
             }
-            else MessageBox.Show("Введите логин");
+            catch
+            {
+                MessageBox.Show("Проверьте соединение с интернетом");
+            }
         }
 
         private void login_Checked(object sender, RoutedEventArgs e)
