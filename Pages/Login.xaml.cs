@@ -20,9 +20,12 @@ namespace SEC_Control.Pages
     /// </summary>
     public partial class Login : Page
     {
+        DBEntities db = new DBEntities();
+
         public Login()
         {
             InitializeComponent();
+            db.Database.Connection.ConnectionString = "data source=u0981746.plsk.regruhosting.ru;initial catalog=u0981746_SEC;persist security info=True;user id=u0981746_HecklerK;password=rLsczkUUvvG2dsz;MultipleActiveResultSets=True;App=EntityFramework&quot;";
         }
         public class Us
         {
@@ -41,34 +44,31 @@ namespace SEC_Control.Pages
                 {
                     if (pass.Password.Length > 0)
                     {
-                        using (var db = new DBEntities())
-                        {
-                            var user = db.Users
+                        var user = db.Users
                                 .AsNoTracking()
                                 .FirstOrDefault(u => u.login == login.Text && u.password == pass.Password);
-                            if (user == null)
+                        if (user == null)
+                        {
+                            var sec = db.SECs
+                                .AsNoTracking()
+                                .FirstOrDefault(s => s.login == login.Text && s.pass == pass.Password);
+                            if (sec == null)
                             {
-                                var sec = db.SECs
-                                    .AsNoTracking()
-                                    .FirstOrDefault(s => s.login == login.Text && s.pass == pass.Password);
-                                if (sec == null)
-                                {
-                                    MessageBox.Show("Пользователь не найден");
-                                    return;
-                                }
-                                Us c = new Us(sec.login);
-                                NavigationService.Navigate(new Users(c));
+                                MessageBox.Show("Пользователь не найден");
                                 return;
                             }
-                            Us cs = new Us(user.login);
-                            switch (user.type)
-                            {
-                                case 0:
-                                    NavigationService.Navigate(new Admin(cs));
-                                    break;
-                                default:
-                                    break;
-                            }
+                            Us c = new Us(sec.login);
+                            NavigationService.Navigate(new Users(c));
+                            return;
+                        }
+                        Us cs = new Us(user.login);
+                        switch (user.type)
+                        {
+                            case 0:
+                                NavigationService.Navigate(new Admin(cs));
+                                break;
+                            default:
+                                break;
                         }
                     }
                     else MessageBox.Show("Введите пароль");

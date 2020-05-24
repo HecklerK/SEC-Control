@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Хранилище Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Pavilion">
           <Key>
             <PropertyRef Name="id" />
@@ -83,7 +83,8 @@
             <End Role="SEC" EntitySet="SEC" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -95,8 +96,8 @@
           <Property Name="number" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="SEC" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="SEC1" Relationship="Self.FK_Pavilion_SEC" FromRole="Pavilion" ToRole="SEC" />
           <Property Name="comments" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="SEC1" Relationship="Self.FK_Pavilion_SEC" FromRole="Pavilion" ToRole="SEC" />
         </EntityType>
         <EntityType Name="SEC">
           <Key>
@@ -178,11 +179,11 @@
           <EntitySetMapping Name="Pavilions">
             <EntityTypeMapping TypeName="Model.Pavilion">
               <MappingFragment StoreEntitySet="Pavilion">
-                <ScalarProperty Name="comments" ColumnName="comments" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="number" ColumnName="number" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="SEC" ColumnName="SEC" />
+                <ScalarProperty Name="comments" ColumnName="comments" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

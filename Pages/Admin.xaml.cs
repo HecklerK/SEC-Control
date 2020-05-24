@@ -20,6 +20,7 @@ namespace SEC_Control.Pages
     /// </summary>
     public partial class Admin : Page
     {
+        DBEntities db = new DBEntities();
         int b = 0;
 
         public class pavi
@@ -38,95 +39,86 @@ namespace SEC_Control.Pages
         public Admin(Login.Us var)
         {
             InitializeComponent();
+            db.Database.Connection.ConnectionString = "data source=u0981746.plsk.regruhosting.ru;initial catalog=u0981746_SEC;persist security info=True;user id=u0981746_HecklerK;password=rLsczkUUvvG2dsz;MultipleActiveResultSets=True;App=EntityFramework&quot;";
             login.Content = var.login;
         }
 
         void UpdateSEC()
         {
             list1.Items.Clear();
-            using (var db = new DBEntities())
+            var sec = db.SECs
+                .Take(30);
+            foreach (var s in sec)
             {
-                var sec = db.SECs
-                    .Take(30);
-                foreach (var s in sec)
+                string name = "";
+                foreach (var t in db.Types)
+                    if (s.type == t.id) name = t.name;
+                name += " " + s.name;
+                sece Data = new sece
                 {
-                    string name = "";
-                    foreach (var t in db.Types)
-                        if (s.type == t.id) name = t.name;
-                    name += " " + s.name;
-                    sece Data = new sece
-                    {
-                        inn = s.inn,
-                        kpp = s.kpp,
-                        name = name
-                    };
-                    list1.Items.Add(Data);
-                }
-                tb_type.Items.Clear();
-                var type = db.Types;
-                foreach (var t in type)
-                {
-                    tb_type.Items.Add(t.name);
-                }
+                    inn = s.inn,
+                    kpp = s.kpp,
+                    name = name
+                };
+                list1.Items.Add(Data);
+            }
+            tb_type.Items.Clear();
+            var type = db.Types;
+            foreach (var t in type)
+            {
+                tb_type.Items.Add(t.name);
             }
         }
 
         void updatePavilion()
         {
             list2.Items.Clear();
-            using(var db = new DBEntities())
+            var pav = db.Pavilions
+                .Where(a => a.SEC == list1.SelectedIndex + 1);
+            foreach (var p in pav)
             {
-                var pav = db.Pavilions
-                    .Where(a => a.SEC == list1.SelectedIndex + 1);
-                foreach (var p in pav)
+                pavi Data = new pavi
                 {
-                    pavi Data = new pavi
-                    {
-                        id = p.number,
-                        name = p.name
-                    };
-                    list2.Items.Add(Data);
-                }
+                    id = p.number,
+                    name = p.name
+                };
+                list2.Items.Add(Data);
             }
         }
 
         void updateInfoSEC()
         {
-            using (var db = new DBEntities())
+            var sec = db.SECs
+                .Join(db.Types,
+                typeID => typeID.type,
+                typeN => typeN.id,
+                (typeID, typeN) => new { ID = typeID, N = typeN })
+                .Where(p => p.ID.id == list1.SelectedIndex + 1);
+            foreach (var s in sec)
             {
-                var sec = db.SECs
-                    .Join(db.Types,
-                    typeID => typeID.type,
-                    typeN => typeN.id,
-                    (typeID, typeN) => new { ID = typeID, N = typeN })
-                    .Where(p => p.ID.id == list1.SelectedIndex + 1);
-                foreach (var s in sec)
-                {
-                    tb_inn.Text = s.ID.inn.ToString();
-                    tb_kpp.Text = s.ID.kpp.ToString();
-                    tb_name.Text = s.ID.name;
-                    tb_type.Text = s.N.name;
-                    tb_phone.Text = s.ID.phone.ToString();
-                    tb_login.Text = s.ID.login;
-                    tb_pass.Text = s.ID.pass;
-                }
+                tb_inn.Text = s.ID.inn.ToString();
+                tb_kpp.Text = s.ID.kpp.ToString();
+                tb_name.Text = s.ID.name;
+                tb_type.Text = s.N.name;
+                tb_phone.Text = s.ID.phone.ToString();
+                tb_login.Text = s.ID.login;
+                tb_pass.Text = s.ID.pass;
             }
         }
 
         void updateInfoPav()
         {
             if (list2.SelectedIndex != -1)
-                using (var db = new DBEntities())
-                {
-                    dynamic si = list2.SelectedItem;
-                    int id = Convert.ToInt32(si.id);
-                    var pav = db.Pavilions
-                            .Where(p => p.SEC == list1.SelectedIndex + 1 && p.number == id)
-                            .FirstOrDefault();
-                    tb_pav.Text = pav.number.ToString();
-                    tb_p_n.Text = pav.name;
-                    tb_p_o.Text = pav.comments;
-                }
+            {
+                dynamic si = list2.SelectedItem;
+                int id = Convert.ToInt32(si.id);
+                var pav = db.Pavilions
+                        .Where(p => p.SEC == list1.SelectedIndex + 1 && p.number == id)
+                        .FirstOrDefault();
+                tb_pav.Text = pav.number.ToString();
+                tb_p_n.Text = pav.name;
+                tb_p_o.Text = pav.comments;
+            }
             else
             {
                 tb_pav.Text = "";
@@ -177,83 +169,80 @@ namespace SEC_Control.Pages
         {
             try
             {
-                using (var db = new DBEntities())
+                if (b != 1)
                 {
-                    if (b != 1)
+                    int l = list1.SelectedIndex;
+                    int l2 = list2.SelectedIndex;
+                    if (list2.SelectedIndex != -1)
                     {
-                        int l = list1.SelectedIndex;
-                        int l2 = list2.SelectedIndex;
-                        if (list2.SelectedIndex != -1)
+                        var pav = db.Pavilions
+                            .Where(p => p.SEC == list1.SelectedIndex + 1);
+                        int[] mas = new int[pav.Count()];
+                        int i = 0;
+                        foreach (var p in pav)
                         {
-                            var pav = db.Pavilions
-                                .Where(p => p.SEC == list1.SelectedIndex + 1);
-                            int[] mas = new int[pav.Count()];
-                            int i = 0;
-                            foreach (var p in pav)
-                            {
-                                mas[i] = p.id;
-                                i++;
-                            }
-                            var tmp = mas[list2.SelectedIndex];
-                            var pa = db.Pavilions
-                                .Where(p => p.id == tmp)
-                                .FirstOrDefault();
-                            pa.number = Convert.ToInt32(tb_pav.Text);
-                            pa.name = tb_p_n.Text;
-                            pa.comments = tb_p_o.Text;
-                            db.SaveChanges();
-                            updatePavilion();
+                            mas[i] = p.id;
+                            i++;
                         }
-                        if (list1.SelectedIndex != -1)
-                        {
-                            var sec = db.SECs
-                                .Join(db.Types,
-                                typeID => typeID.type,
-                                typeN => typeN.id,
-                                (typeID, typeN) => new { ID = typeID, N = typeN })
-                                .Where(p => p.ID.id == list1.SelectedIndex + 1)
-                                .FirstOrDefault();
-                            var s = sec;
-                            s.ID.inn = Convert.ToInt32(tb_inn.Text);
-                            s.ID.kpp = Convert.ToInt32(tb_kpp.Text);
-                            s.ID.name = tb_name.Text;
-                            foreach (var t in db.Types)
-                                if (t.name == tb_type.Text) s.ID.type = t.id;
-                            s.ID.phone = tb_phone.Text;
-                            s.ID.login = tb_login.Text;
-                            s.ID.pass = tb_pass.Text;
-                            db.SaveChanges();
-                            UpdateSEC();
-                        }
-                        list1.SelectedIndex = l;
-                        list2.SelectedIndex = l2;
+                        var tmp = mas[list2.SelectedIndex];
+                        var pa = db.Pavilions
+                            .Where(p => p.id == tmp)
+                            .FirstOrDefault();
+                        pa.number = Convert.ToInt32(tb_pav.Text);
+                        pa.name = tb_p_n.Text;
+                        pa.comments = tb_p_o.Text;
+                        db.SaveChanges();
+                        updatePavilion();
                     }
-                    else
+                    if (list1.SelectedIndex != -1)
                     {
-                        if (tb_inn.Text != "" && tb_name.Text != "" && tb_type.Text != "" && tb_login.Text != "" && tb_pass.Text != "" && tb_phone.Text != "")
+                        var sec = db.SECs
+                            .Join(db.Types,
+                            typeID => typeID.type,
+                            typeN => typeN.id,
+                            (typeID, typeN) => new { ID = typeID, N = typeN })
+                            .Where(p => p.ID.id == list1.SelectedIndex + 1)
+                            .FirstOrDefault();
+                        var s = sec;
+                        s.ID.inn = Convert.ToInt32(tb_inn.Text);
+                        s.ID.kpp = Convert.ToInt32(tb_kpp.Text);
+                        s.ID.name = tb_name.Text;
+                        foreach (var t in db.Types)
+                            if (t.name == tb_type.Text) s.ID.type = t.id;
+                        s.ID.phone = tb_phone.Text;
+                        s.ID.login = tb_login.Text;
+                        s.ID.pass = tb_pass.Text;
+                        db.SaveChanges();
+                        UpdateSEC();
+                    }
+                    list1.SelectedIndex = l;
+                    list2.SelectedIndex = l2;
+                }
+                else
+                {
+                    if (tb_inn.Text != "" && tb_name.Text != "" && tb_type.Text != "" && tb_login.Text != "" && tb_pass.Text != "" && tb_phone.Text != "")
+                    {
+                        var t = db.Types
+                            .Where(ty => ty.name == tb_type.Text)
+                            .FirstOrDefault();
+                        SEC s = new SEC
                         {
-                            var t = db.Types
-                                .Where(ty => ty.name == tb_type.Text)
-                                .FirstOrDefault();
-                            SEC s = new SEC
-                            {
-                                inn = Convert.ToInt32(tb_inn.Text),
-                                kpp = Convert.ToInt32(tb_kpp.Text),
-                                name = tb_name.Text,
-                                type = t.id,
-                                login = tb_login.Text,
-                                pass = tb_pass.Text,
-                                phone = tb_phone.Text
-                            };
-                            var sec = db.SECs;
-                            sec.Add(s);
-                            db.SaveChanges();
-                            UpdateSEC();
-                            l_state.Content = "Изменение";
-                            list1.IsEnabled = true;
-                            list2.IsEnabled = true;
-                            b = 0;
-                        }
+                            inn = Convert.ToInt32(tb_inn.Text),
+                            kpp = Convert.ToInt32(tb_kpp.Text),
+                            name = tb_name.Text,
+                            type = t.id,
+                            login = tb_login.Text,
+                            pass = tb_pass.Text,
+                            phone = tb_phone.Text
+                        };
+                        var sec = db.SECs;
+                        sec.Add(s);
+                        db.SaveChanges();
+                        UpdateSEC();
+                        l_state.Content = "Изменение";
+                        list1.IsEnabled = true;
+                        list2.IsEnabled = true;
+                        b = 0;
                     }
                 }
             }
@@ -269,26 +258,25 @@ namespace SEC_Control.Pages
             {
                 FormCol dialog = new FormCol();
                 if (dialog.ShowDialog() == true)
-                    using (var db = new DBEntities())
+                {
+                    var p = db.Pavilions
+                        .Where(pa => pa.SEC == list1.SelectedIndex + 1)
+                        .Count();
+                    var pav = db.Pavilions;
+                    p++;
+                    for (int i = p; i < p + dialog.number; i++)
                     {
-                        var p = db.Pavilions
-                            .Where(pa => pa.SEC == list1.SelectedIndex + 1)
-                            .Count();
-                        var pav = db.Pavilions;
-                        p++;
-                        for (int i = p; i < p + dialog.number; i++)
+                        Pavilion pa = new Pavilion
                         {
-                            Pavilion pa = new Pavilion
-                            {
-                                number = i,
-                                name = "",
-                                SEC = list1.SelectedIndex + 1
-                            };
-                            pav.Add(pa);
-                        }
-                        db.SaveChanges();
-                        updatePavilion();
+                            number = i,
+                            name = "",
+                            SEC = list1.SelectedIndex + 1
+                        };
+                        pav.Add(pa);
                     }
+                    db.SaveChanges();
+                    updatePavilion();
+                }
                 else MessageBox.Show("Создание отменено");
             }
         }

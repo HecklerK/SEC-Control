@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +25,8 @@ namespace SEC_Control.Pages
     /// </summary>
     public partial class Users : Page
     {
+        DBEntities db = new DBEntities();
+
         public class pavi
         {
             public int id { get; set; }
@@ -36,15 +39,13 @@ namespace SEC_Control.Pages
         public Users(Login.Us var)
         {
             InitializeComponent();
+            db.Database.Connection.ConnectionString = "data source=u0981746.plsk.regruhosting.ru;initial catalog=u0981746_SEC;persist security info=True;user id=u0981746_HecklerK;password=rLsczkUUvvG2dsz;MultipleActiveResultSets=True;App=EntityFramework&quot;";
             l = var.login;
-            using (var db = new DBEntities())
-            {
-                sec = db.SECs
-                    .FirstOrDefault(p => p.login == l);
-                var t = db.Types
-                    .FirstOrDefault(p => p.id == sec.type);
-                type = t.name;
-            }
+            sec = db.SECs
+                .FirstOrDefault(p => p.login == l);
+            var t = db.Types
+                .FirstOrDefault(p => p.id == sec.type);
+            type = t.name;
             login.Content = type + " " + sec.name;
             updateInfoSEC();
             updatePavilion();
@@ -60,17 +61,16 @@ namespace SEC_Control.Pages
         void updateInfoPav()
         {
             if (list.SelectedIndex != -1)
-                using (var db = new DBEntities())
-                {
-                    dynamic si = list.SelectedItem;
-                    int id = Convert.ToInt32(si.id);
-                    var pav = db.Pavilions
-                            .Where(p => p.SEC == sec.id && p.number == id)
-                            .FirstOrDefault();
-                    tb_pav.Text = pav.number.ToString();
-                    tb_p_n.Text = pav.name;
-                    tb_p_o.Text = pav.comments;
-                }
+            {
+                dynamic si = list.SelectedItem;
+                int id = Convert.ToInt32(si.id);
+                var pav = db.Pavilions
+                        .Where(p => p.SEC == sec.id && p.number == id)
+                        .FirstOrDefault();
+                tb_pav.Text = pav.number.ToString();
+                tb_p_n.Text = pav.name;
+                tb_p_o.Text = pav.comments;
+            }
             else
             {
                 tb_pav.Text = "";
@@ -87,19 +87,16 @@ namespace SEC_Control.Pages
         void updatePavilion()
         {
             list.Items.Clear();
-            using (var db = new DBEntities())
+            var pav = db.Pavilions
+                .Where(a => a.SEC == sec.id);
+            foreach (var p in pav)
             {
-                var pav = db.Pavilions
-                    .Where(a => a.SEC == sec.id);
-                foreach (var p in pav)
+                pavi Data = new pavi
                 {
-                    pavi Data = new pavi
-                    {
-                        id = p.number,
-                        name = p.name
-                    };
-                    list.Items.Add(Data);
-                }
+                    id = p.number,
+                    name = p.name
+                };
+                list.Items.Add(Data);
             }
         }
 
@@ -175,13 +172,10 @@ namespace SEC_Control.Pages
                     // Сообщаем серверу о размере файла
                     reqFTP.ContentLength = fi.Length;
                     Task.Run(() => fileLoad(fi, reqFTP));
-                    using (var db = new DBEntities())
-                    {
-                        sec = db.SECs
-                            .FirstOrDefault(p => p.id == sec.id);
-                        sec.format = ext;
-                        db.SaveChanges();
-                    };
+                    sec = db.SECs
+                        .FirstOrDefault(p => p.id == sec.id);
+                    sec.format = ext;
+                    db.SaveChanges();
                     updateInfoSEC();
                     break;
                 case DialogResult.Cancel:
@@ -194,36 +188,33 @@ namespace SEC_Control.Pages
         {
             try
             {
-                using (var db = new DBEntities())
+                sec = db.SECs
+                    .FirstOrDefault(p => p.id == sec.id);
+                sec.phone = tb_phone.Text;
+                db.SaveChanges();
+                if (list.SelectedIndex != -1)
                 {
-                    sec = db.SECs
-                        .FirstOrDefault(p => p.id == sec.id);
-                    sec.phone = tb_phone.Text;
-                    db.SaveChanges();
-                    if (list.SelectedIndex != -1)
+                    var pav = db.Pavilions
+                        .Where(p => p.SEC == sec.id);
+                    int[] mas = new int[pav.Count()];
+                    int i = 0;
+                    foreach (var p in pav)
                     {
-                        var pav = db.Pavilions
-                            .Where(p => p.SEC == sec.id);
-                        int[] mas = new int[pav.Count()];
-                        int i = 0;
-                        foreach (var p in pav)
-                        {
-                            mas[i] = p.id;
-                            i++;
-                        }
-                        var tmp = mas[list.SelectedIndex];
-                        var pa = db.Pavilions
-                            .Where(p => p.id == tmp)
-                            .FirstOrDefault();
-                        pa.number = Convert.ToInt32(tb_pav.Text);
-                        pa.name = tb_p_n.Text;
-                        pa.comments = tb_p_o.Text;
-                        db.SaveChanges();
-                        updatePavilion();
+                        mas[i] = p.id;
+                        i++;
                     }
+                    var tmp = mas[list.SelectedIndex];
+                    var pa = db.Pavilions
+                        .Where(p => p.id == tmp)
+                        .FirstOrDefault();
+                    pa.number = Convert.ToInt32(tb_pav.Text);
+                    pa.name = tb_p_n.Text;
+                    pa.comments = tb_p_o.Text;
+                    db.SaveChanges();
+                    updatePavilion();
                 }
             }
-            catch(Exception a)
+            catch (Exception a)
             {
                 System.Windows.MessageBox.Show(a.Message);
             }
