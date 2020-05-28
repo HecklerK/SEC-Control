@@ -276,8 +276,8 @@
         </Border>
         <Button Content="Сохранить" Margin="0,0" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" FontSize="20" Click="Button_Click_2" Width="99"/>
         <Button x:Name="but" Content="отмена" Margin="0,0" Padding="0" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="0" FontSize="20" Click="Button_Click_4" Width="68"/>
-        <Button Content="-" Grid.Column="2" Margin="0,0,0,0" Grid.Row="3" FontSize="20"/>
-        <Button Content="-" Grid.Column="4" Margin="0,0,0,0" Grid.Row="3" FontSize="20"/>
+        <Button Content="-" Grid.Column="2" Margin="0,0,0,0" Grid.Row="3" FontSize="20" Click="Button_Click_5"/>
+        <Button Content="-" Grid.Column="4" Margin="0,0,0,0" Grid.Row="3" FontSize="20" Click="Button_Click_6"/>
         <Label x:Name="l_state" Content="Изменение" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-2" Margin="99,0,68,0" Grid.Row="3" Width="153" FontSize="20"/>
     </Grid>
 </Page>

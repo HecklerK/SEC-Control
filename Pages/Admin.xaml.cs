@@ -45,15 +45,28 @@ namespace SEC_Control.Pages
 
         void UpdateSEC()
         {
+            int l = list1.SelectedIndex;
+            int l2 = list2.SelectedIndex;
+            tb_inn.Text = "";
+            tb_kpp.Text = "";
+            tb_name.Text = "";
+            tb_type.Text = "";
+            tb_phone.Text = "";
+            tb_login.Text = "";
+            tb_pass.Text = "";
+            tb_pav.Text = "";
+            tb_p_n.Text = "";
             list1.Items.Clear();
             var sec = db.SECs
-                .Take(30);
+                .AsNoTracking();
             foreach (var s in sec)
             {
                 string name = "";
                 foreach (var t in db.Types)
                     if (s.type == t.id) name = t.name;
                 name += " " + s.name;
+                if (s.delete == 1) name += " (Заблокирован)";
+                else name += "        ";
                 sece Data = new sece
                 {
                     inn = s.inn,
@@ -68,6 +81,8 @@ namespace SEC_Control.Pages
             {
                 tb_type.Items.Add(t.name);
             }
+            list1.SelectedIndex = l;
+            list2.SelectedIndex = l2;
         }
 
         void updatePavilion()
@@ -88,6 +103,15 @@ namespace SEC_Control.Pages
 
         void updateInfoSEC()
         {
+            tb_inn.Text = "";
+            tb_kpp.Text = "";
+            tb_name.Text = "";
+            tb_type.Text = "";
+            tb_phone.Text = "";
+            tb_login.Text = "";
+            tb_pass.Text = "";
+            tb_pav.Text = "";
+            tb_p_n.Text = "";
             var sec = db.SECs
                 .Join(db.Types,
                 typeID => typeID.type,
@@ -209,7 +233,7 @@ namespace SEC_Control.Pages
                         s.ID.name = tb_name.Text;
                         foreach (var t in db.Types)
                             if (t.name == tb_type.Text) s.ID.type = t.id;
-                        s.ID.phone = tb_phone.Text;
+                        s.ID.phone = Convert.ToInt64(tb_phone.Text);
                         s.ID.login = tb_login.Text;
                         s.ID.pass = tb_pass.Text;
                         db.SaveChanges();
@@ -233,7 +257,7 @@ namespace SEC_Control.Pages
                             type = t.id,
                             login = tb_login.Text,
                             pass = tb_pass.Text,
-                            phone = tb_phone.Text
+                            phone = Convert.ToInt64(tb_phone.Text)
                         };
                         var sec = db.SECs;
                         sec.Add(s);
@@ -304,6 +328,44 @@ namespace SEC_Control.Pages
                 {
                     tb_pass.Text += rand[rnd.Next(0, rand.Length)];
                 }
+            }
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            if (list1.SelectedIndex != -1)
+            {
+                var sec = db.SECs
+                    .FirstOrDefault(p => p.id == list1.SelectedIndex + 1);
+                if (sec.delete == 1)
+                    sec.delete = 0;
+                else
+                    sec.delete = 1;
+                db.SaveChanges();
+                UpdateSEC();
+            }
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            if (list2.SelectedIndex != -1)
+            {
+                var pav = db.Pavilions
+                    .Where(p => p.SEC == list1.SelectedIndex + 1);
+                int[] mas = new int[pav.Count()];
+                int i = 0;
+                foreach (var p in pav)
+                {
+                    mas[i] = p.id;
+                    i++;
+                }
+                var tmp = mas[list2.SelectedIndex];
+                var pa = db.Pavilions
+                    .Where(p => p.id == tmp)
+                    .FirstOrDefault();
+                db.Pavilions.Remove(pa);
+                db.SaveChanges();
+                UpdateSEC();
             }
         }
     }

@@ -27,7 +27,7 @@ namespace SEC_Control
         public string name { get; set; }
         public string pass { get; set; }
         public int type { get; set; }
-        public string phone { get; set; }
+        public Nullable<long> phone { get; set; }
         public string format { get; set; }
         public Nullable<int> delete { get; set; }
     

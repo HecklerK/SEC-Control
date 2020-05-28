@@ -57,6 +57,11 @@ namespace SEC_Control.Pages
                                 MessageBox.Show("Пользователь не найден");
                                 return;
                             }
+                            if (sec.delete == 1)
+                            {
+                                MessageBox.Show("Пользователь заблокирован");
+                                return;
+                            }
                             Us c = new Us(sec.login);
                             NavigationService.Navigate(new Users(c));
                             return;

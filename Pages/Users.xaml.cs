@@ -156,13 +156,13 @@ namespace SEC_Control.Pages
                     // Учетная запись
                     if (sec.format != null)
                     {
-                        reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://hecklerk.online/" + sec.login + sec.format));
+                        reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://hecklerk.online/plans" + sec.login + sec.format));
                         reqFTP.Credentials = new NetworkCredential("ftpplans", "CH5pjX5b");
                         reqFTP.KeepAlive = false;
                         reqFTP.Method = WebRequestMethods.Ftp.DeleteFile;
                         FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                     }
-                    reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://hecklerk.online/" + sec.login + ext));
+                    reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://hecklerk.online/plans" + sec.login + ext));
                     reqFTP.Credentials = new NetworkCredential("ftpplans", "CH5pjX5b");
                     reqFTP.KeepAlive = false;
                     // Задаем команду на закачку
@@ -190,7 +190,7 @@ namespace SEC_Control.Pages
             {
                 sec = db.SECs
                     .FirstOrDefault(p => p.id == sec.id);
-                sec.phone = tb_phone.Text;
+                sec.phone = Convert.ToInt64(tb_phone.Text);
                 db.SaveChanges();
                 if (list.SelectedIndex != -1)
                 {
